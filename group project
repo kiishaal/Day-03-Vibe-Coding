@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Idea Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            width: 500px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .header {
+            background-color: #3370c5;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        select, input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        select {
+            width: 30%;
+            color: #555;
+        }
+
+        input {
+            flex-grow: 1;
+        }
+
+        button {
+            background-color: #3370c5;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #285ba3;
+        }
+
+        .list-section {
+            padding: 15px;
+            min-height: 150px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .suggested-by {
+            font-style: italic;
+            color: #555;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">Group Idea Board</div>
+        
+        <div class="input-section">
+            <select id="nameSelect">
+                <option value="" disabled selected>Select your name...</option>
+                <option value="Nimal">Nimal</option>
+                <option value="Sara">Sara</option>
+                <option value="Alex">Alex</option>
+            </select>
+            
+            <input type="text" id="ideaInput" placeholder="Enter your idea here...">
+            
+            <button onclick="addIdea()">Add Idea</button>
+        </div>
+
+        <div class="list-section">
+            <ul id="ideaList">
+                <li>Build a study planner – <span class="suggested-by">suggested by Nimal</span></li>
+                <li>Start a podcast – <span class="suggested-by">suggested by Sara</span></li>
+                <li>Organize a coding workshop – <span class="suggested-by">suggested by <span class="user-name">Alex</span></span></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function addIdea() {
+            const nameSelect = document.getElementById('nameSelect');
+            const ideaInput = document.getElementById('ideaInput');
+            const ideaList = document.getElementById('ideaList');
+
+            const name = nameSelect.value;
+            const idea = ideaInput.value.trim();
+
+            if (name === "" || idea === "") {
+                alert("Please select a name and enter an idea!");
+                return;
+            }
+
+            // Create new list item
+            const li = document.createElement('li');
+            li.innerHTML = `${idea} – <span class="suggested-by">suggested by <strong>${name}</strong></span>`;
+            
+            // Add to list
+            ideaList.appendChild(li);
+
+            // Clear input
+            ideaInput.value = "";
+        }
+    </script>
+</body>
+</html>
