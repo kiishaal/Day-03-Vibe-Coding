@@ -10,21 +10,41 @@
 
     :root {
       --bg: #f0f4f8;
+      --bg-gradient: linear-gradient(135deg, #f0f4f8, #e2e8f0, #edf2f7);
       --card: rgba(255, 255, 255, 0.9);
+      --item-bg: #ffffff;
+      --navbar-bg: rgba(255, 255, 255, 0.8);
+      --sidebar-bg: rgba(255, 255, 255, 0.3);
       --border: rgba(0, 0, 0, 0.08);
       --text: #1a202c;
       --muted: #718096;
       --accent: #3182ce;
       --sidebar-width: 260px;
       --navbar-height: 70px;
+      --input-bg: #ffffff;
+    }
+
+    body.dark-mode {
+      --bg: #121212;
+      --bg-gradient: linear-gradient(135deg, #121212, #1a202c, #2d3748);
+      --card: rgba(26, 32, 44, 0.9);
+      --item-bg: #2d3748;
+      --navbar-bg: rgba(26, 32, 44, 0.8);
+      --sidebar-bg: rgba(26, 32, 44, 0.3);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f7fafc;
+      --muted: #a0aec0;
+      --accent: #63b3ed;
+      --input-bg: #2d3748;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #edf2f7);
+      background: var(--bg-gradient);
       font-family: 'DM Sans', sans-serif;
       color: var(--text);
       overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* Orbs */
@@ -49,13 +69,14 @@
     /* Navbar */
     .navbar {
       grid-column: 1 / -1;
-      background: rgba(255, 255, 255, 0.8);
+      background: var(--navbar-bg);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       padding: 0 30px;
       justify-content: space-between;
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     .nav-logo {
@@ -66,9 +87,15 @@
       letter-spacing: 2px;
     }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 10px;
     }
 
     .nav-btn {
@@ -86,7 +113,7 @@
 
     .nav-btn:hover {
       color: var(--text);
-      background: rgba(0,0,0,0.05);
+      background: rgba(128, 128, 128, 0.1);
     }
 
     .nav-btn.active {
@@ -94,12 +121,56 @@
       background: var(--accent);
     }
 
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #cbd5e0;
+      border-radius: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .dark-mode .toggle-switch {
+      background: var(--accent);
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .dark-mode .toggle-knob {
+      transform: translateX(20px);
+    }
+
+    .theme-icon {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
     /* Sidebar */
     .sidebar {
-      background: rgba(255,255,255,0.3);
+      background: var(--sidebar-bg);
       border-right: 1px solid var(--border);
       padding: 30px 20px;
       overflow-y: auto;
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     .sidebar-section h3 {
@@ -112,13 +183,13 @@
     }
 
     .event-item {
-      background: white;
+      background: var(--item-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px;
       margin-bottom: 12px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, border-color 0.3s ease;
     }
 
     .event-item:hover {
@@ -172,9 +243,27 @@
     .header h1 span { background: linear-gradient(90deg, #3182ce, #63b3ed, #48DBFB); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .header .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
 
-    .input-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+    .input-card { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 20px; 
+      padding: 24px; 
+      margin-bottom: 28px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
     .input-row { display: flex; gap: 12px; flex-wrap: wrap; }
-    input[type="text"], input[type="number"], select { background: white; border: 1px solid var(--border); border-radius: 12px; color: var(--text); padding: 12px 16px; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    input[type="text"], input[type="number"], select { 
+      background: var(--input-bg); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      color: var(--text); 
+      padding: 12px 16px; 
+      font-size: 15px; 
+      font-family: 'DM Sans', sans-serif; 
+      outline: none; 
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.3s ease, color 0.3s ease; 
+    }
     input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1); }
 
     .btn-primary { background: var(--accent); border: none; border-radius: 12px; color: white; padding: 12px 24px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
@@ -183,40 +272,56 @@
     /* GPA Calc Specific */
     .gpa-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-bottom: 20px; }
     .gpa-table th { text-align: left; padding: 0 16px 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-    .gpa-row { background: white; border-radius: 12px; }
-    .gpa-row td { padding: 12px 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .gpa-row { background: var(--item-bg); border-radius: 12px; transition: background 0.3s ease; }
+    .gpa-row td { padding: 12px 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
     .gpa-row td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
     .gpa-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
     
     .gpa-result-card {
-        background: white;
+        background: var(--item-bg);
         border: 2px solid var(--accent);
         border-radius: 20px;
         padding: 30px;
         text-align: center;
         margin-top: 30px;
         box-shadow: 0 10px 30px rgba(49, 130, 206, 0.1);
+        transition: background 0.3s ease, border-color 0.3s ease;
     }
     .gpa-value { font-size: 64px; font-weight: 700; color: var(--accent); }
     .gpa-label { font-size: 16px; color: var(--muted); margin-bottom: 10px; }
 
     /* Ideas list */
     #ideas-list { display: flex; flex-direction: column; gap: 12px; }
-    .idea-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .idea-card { 
+      background: var(--item-bg); 
+      border: 1px solid var(--border); 
+      border-radius: 16px; 
+      padding: 18px 20px; 
+      display: flex; 
+      align-items: center; 
+      gap: 16px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
     .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
     .idea-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; color: var(--text); }
     .idea-meta { font-size: 12px; color: var(--muted); }
     .del-btn { background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px; color: #e53e3e; width: 32px; height: 32px; cursor: pointer; transition: all 0.2s; }
     .del-btn:hover { background: #feb2b2; color: #c53030; }
+    .dark-mode .del-btn { background: #2d1a1a; border-color: #4a2b2b; color: #fc8181; }
+    .dark-mode .del-btn:hover { background: #4a2b2b; color: #fff; }
 
     /* Toast */
     #toast { position: fixed; bottom: 30px; right: 30px; background: #2d3748; border-radius: 12px; padding: 14px 20px; color: white; z-index: 999; transform: translateX(200px); opacity: 0; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .dark-mode #toast { background: #f7fafc; color: #1a202c; }
     #toast.show { transform: translateX(0); opacity: 1; }
 
     @media (max-width: 768px) {
       .app-wrapper { grid-template-columns: 1fr; }
       .sidebar { display: none; }
       .navbar { padding: 0 15px; }
+      .nav-right { gap: 15px; }
+      .theme-label { display: none; }
     }
   </style>
 </head>
@@ -228,9 +333,18 @@
 <div class="app-wrapper">
   <nav class="navbar">
     <div class="nav-logo">STUDENT<span>HUB</span></div>
-    <div class="nav-links">
-      <button class="nav-btn active" onclick="showSection('ideas', this)">Group Ideas</button>
-      <button class="nav-btn" onclick="showSection('gpa', this)">GPA Calc</button>
+    <div class="nav-right">
+      <div class="nav-links">
+        <button class="nav-btn active" onclick="showSection('ideas', this)">Group Ideas</button>
+        <button class="nav-btn" onclick="showSection('gpa', this)">GPA Calc</button>
+      </div>
+      <div class="theme-toggle" onclick="toggleDarkMode()">
+        <span class="theme-icon">🌞</span>
+        <div class="toggle-switch">
+          <div class="toggle-knob"></div>
+        </div>
+        <span class="theme-icon">🌙</span>
+      </div>
     </div>
   </nav>
 
@@ -316,7 +430,7 @@
           </table>
           
           <div style="display: flex; gap: 12px;">
-            <button class="btn-primary" style="background: rgba(255,255,255,0.1);" onclick="addGpaRow()">+ Add Course</button>
+            <button class="btn-primary" style="background: rgba(128,128,128,0.1); color: var(--text);" onclick="addGpaRow()">+ Add Course</button>
             <button class="btn-primary" onclick="calculateGPA()">Calculate GPA</button>
           </div>
         </div>
@@ -337,6 +451,19 @@
 <div id="toast"></div>
 
 <script>
+  // Theme Toggle Logic
+  function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    showToast(`${isDark ? 'Dark' : 'Light'} mode enabled`);
+  }
+
+  // Initialize Theme
+  if (localStorage.getItem('theme') === 'dark' || 
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.body.classList.add('dark-mode');
+  }
+
   // Navigation
   function showSection(section, btn) {
     document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
