@@ -3,427 +3,419 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Group Idea Board</title>
+  <title>Student Hub - Idea Board & GPA Calc</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f0c29;
-      --card: rgba(255,255,255,0.06);
-      --border: rgba(255,255,255,0.12);
-      --text: #ffffff;
-      --muted: rgba(255,255,255,0.4);
+      --bg: #f0f4f8;
+      --card: rgba(255, 255, 255, 0.9);
+      --border: rgba(0, 0, 0, 0.08);
+      --text: #1a202c;
+      --muted: #718096;
+      --accent: #3182ce;
+      --sidebar-width: 260px;
+      --navbar-height: 70px;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #edf2f7);
       font-family: 'DM Sans', sans-serif;
-      padding: 40px 20px 80px;
-      position: relative;
-      overflow-x: hidden;
       color: var(--text);
+      overflow-x: hidden;
     }
 
     /* Orbs */
     .orb {
       position: fixed;
       border-radius: 50%;
-      filter: blur(60px);
+      filter: blur(80px);
       pointer-events: none;
       z-index: 0;
     }
 
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
+    /* Layout Structure */
+    .app-wrapper {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      grid-template-rows: var(--navbar-height) 1fr;
+      height: 100vh;
       position: relative;
       z-index: 1;
     }
 
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 36px;
-      animation: slideIn 0.6s ease both;
-    }
-
-    .header .label {
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 4px;
-      color: #48DBFB;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    .header h1 {
-      font-size: clamp(32px, 7vw, 52px);
-      font-weight: 700;
-      line-height: 1.1;
-    }
-
-    .header h1 span {
-      background: linear-gradient(90deg, #FF6B6B, #FECA57, #48DBFB);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .header .subtitle {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    /* Member dots */
-    .members-row {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    .member-dot {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
+    /* Navbar */
+    .navbar {
+      grid-column: 1 / -1;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+      padding: 0 30px;
+      justify-content: space-between;
     }
 
-    .member-dot:hover { transform: scale(1.15); }
-    .member-dot.active { transform: scale(1.25); }
+    .nav-logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
 
-    /* Name input */
-    .name-input-wrap {
-      position: relative;
-      min-width: 150px;
+    .nav-links {
+      display: flex;
+      gap: 20px;
     }
-    .name-input-wrap input {
-      width: 100%;
-      padding-right: 36px;
-    }
-    .name-clear {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+
+    .nav-btn {
       background: none;
       border: none;
-      color: rgba(255,255,255,0.3);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 14px;
-      padding: 0;
-      line-height: 1;
-      display: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
     }
-    .name-clear:hover { color: #FF6B6B; }
 
-    /* Suggestions dropdown */
-    .suggestions {
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      right: 0;
-      background: #1e1b4b;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      overflow: hidden;
-      z-index: 50;
-      display: none;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    .nav-btn:hover {
+      color: var(--text);
+      background: rgba(0,0,0,0.05);
     }
-    .suggestions.open { display: block; }
-    .suggestion-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      cursor: pointer;
+
+    .nav-btn.active {
+      color: white;
+      background: var(--accent);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: rgba(255,255,255,0.3);
+      border-right: 1px solid var(--border);
+      padding: 30px 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar-section h3 {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .event-item {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .event-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .event-date {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .event-title {
       font-size: 14px;
       font-weight: 500;
-      transition: background 0.15s;
-    }
-    .suggestion-item:hover { background: rgba(255,255,255,0.08); }
-    .suggestion-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
+      color: var(--text);
     }
 
-    /* Input card */
-    .input-card {
-      background: var(--card);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 28px;
-      animation: slideIn 0.7s ease both;
+    /* Main Content */
+    .main-content {
+      padding: 40px;
+      overflow-y: auto;
     }
 
-    .input-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
     }
 
-    select, input[type="text"] {
-      background: rgba(255,255,255,0.08);
-      border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      color: white;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    select {
-      min-width: 150px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    select option { background: #1a1a3e; color: white; }
-
-    input[type="text"] {
-      flex: 1;
-      min-width: 180px;
-    }
-
-    input[type="text"]::placeholder { color: rgba(255,255,255,0.3); }
-    input[type="text"]:focus { border-color: rgba(255,255,255,0.4); }
-
-    .add-btn {
-      background: linear-gradient(135deg, #48DBFB, #5F27CD);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      padding: 12px 24px;
-      font-size: 15px;
-      font-weight: 700;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
-      white-space: nowrap;
-    }
-
-    .add-btn:hover { transform: scale(1.05); filter: brightness(1.15); }
-
-    .posting-as {
-      margin-top: 14px;
-      font-size: 13px;
-      color: var(--muted);
+    /* Sections */
+    .app-section {
       display: none;
-      align-items: center;
-      gap: 8px;
+      animation: fadeIn 0.5s ease both;
     }
+
+    .app-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Original styles adapted */
+    .header { text-align: center; margin-bottom: 36px; }
+    .header .label { font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+    .header h1 { font-size: clamp(32px, 5vw, 42px); font-weight: 700; line-height: 1.1; color: var(--text); }
+    .header h1 span { background: linear-gradient(90deg, #3182ce, #63b3ed, #48DBFB); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
+
+    .input-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+    .input-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    input[type="text"], input[type="number"], select { background: white; border: 1px solid var(--border); border-radius: 12px; color: var(--text); padding: 12px 16px; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1); }
+
+    .btn-primary { background: var(--accent); border: none; border-radius: 12px; color: white; padding: 12px 24px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.1); box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3); }
+
+    /* GPA Calc Specific */
+    .gpa-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-bottom: 20px; }
+    .gpa-table th { text-align: left; padding: 0 16px 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .gpa-row { background: white; border-radius: 12px; }
+    .gpa-row td { padding: 12px 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .gpa-row td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
+    .gpa-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+    
+    .gpa-result-card {
+        background: white;
+        border: 2px solid var(--accent);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        margin-top: 30px;
+        box-shadow: 0 10px 30px rgba(49, 130, 206, 0.1);
+    }
+    .gpa-value { font-size: 64px; font-weight: 700; color: var(--accent); }
+    .gpa-label { font-size: 16px; color: var(--muted); margin-bottom: 10px; }
 
     /* Ideas list */
     #ideas-list { display: flex; flex-direction: column; gap: 12px; }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: rgba(255,255,255,0.2);
-    }
-
-    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-
-    .idea-card {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      animation: fadeUp 0.4s ease both;
-    }
-
-    .idea-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-
-    .avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-      border: 2px solid transparent;
-    }
-
-    .idea-body { flex: 1; min-width: 0; }
-
-    .idea-text {
-      font-size: 15px;
-      font-weight: 500;
-      color: white;
-      margin-bottom: 4px;
-      word-break: break-word;
-    }
-
-    .idea-meta {
-      font-size: 12px;
-      color: rgba(255,255,255,0.4);
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .idea-meta .member-name { font-weight: 700; }
-
-    .del-btn {
-      background: rgba(255,100,100,0.12);
-      border: 1px solid rgba(255,100,100,0.25);
-      border-radius: 8px;
-      color: #FF6B6B;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 14px;
-      opacity: 0.5;
-      transition: opacity 0.2s, transform 0.2s;
-      flex-shrink: 0;
-    }
-
-    .del-btn:hover { opacity: 1; transform: scale(1.1); }
-
-    /* Stats */
-    #stats-row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .stat-chip {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      border: 1px solid transparent;
-    }
+    .idea-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+    .idea-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; color: var(--text); }
+    .idea-meta { font-size: 12px; color: var(--muted); }
+    .del-btn { background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px; color: #e53e3e; width: 32px; height: 32px; cursor: pointer; transition: all 0.2s; }
+    .del-btn:hover { background: #feb2b2; color: #c53030; }
 
     /* Toast */
-    #toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: rgba(20,20,50,0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      padding: 14px 20px;
-      color: white;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 999;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      transform: translateX(200px);
-      opacity: 0;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      pointer-events: none;
-    }
-
+    #toast { position: fixed; bottom: 30px; right: 30px; background: #2d3748; border-radius: 12px; padding: 14px 20px; color: white; z-index: 999; transform: translateX(200px); opacity: 0; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     #toast.show { transform: translateX(0); opacity: 1; }
 
-    /* Animations */
-    @keyframes slideIn {
-      from { transform: translateY(-20px) scale(0.97); opacity: 0; }
-      to   { transform: translateY(0) scale(1); opacity: 1; }
+    @media (max-width: 768px) {
+      .app-wrapper { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .navbar { padding: 0 15px; }
     }
-
-    @keyframes fadeUp {
-      from { transform: translateY(24px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes floatA { from { transform: translate(0,0); } to { transform: translate(30px, 40px); } }
-    @keyframes floatB { from { transform: translate(0,0); } to { transform: translate(-25px, 30px); } }
-    @keyframes floatC { from { transform: translate(0,0); } to { transform: translate(20px,-35px); } }
   </style>
 </head>
 <body>
 
-<!-- Background orbs -->
-<div class="orb" style="width:220px;height:220px;background:radial-gradient(circle,#FF6B6B33,transparent);top:8%;left:4%;animation:floatA 9s ease-in-out infinite alternate;"></div>
-<div class="orb" style="width:180px;height:180px;background:radial-gradient(circle,#48DBFB22,transparent);top:55%;left:72%;animation:floatB 11s ease-in-out infinite alternate;"></div>
-<div class="orb" style="width:260px;height:260px;background:radial-gradient(circle,#FECA5722,transparent);top:30%;left:38%;animation:floatC 8s ease-in-out infinite alternate;"></div>
-<div class="orb" style="width:150px;height:150px;background:radial-gradient(circle,#1DD1A122,transparent);top:70%;left:12%;animation:floatA 10s ease-in-out infinite alternate;"></div>
+<div class="orb" style="width:300px;height:300px;background:radial-gradient(circle,#FF6B6B22,transparent);top:10%;left:10%;"></div>
+<div class="orb" style="width:400px;height:400px;background:radial-gradient(circle,#48DBFB11,transparent);bottom:10%;right:10%;"></div>
 
-<div class="container">
+<div class="app-wrapper">
+  <nav class="navbar">
+    <div class="nav-logo">STUDENT<span>HUB</span></div>
+    <div class="nav-links">
+      <button class="nav-btn active" onclick="showSection('ideas', this)">Group Ideas</button>
+      <button class="nav-btn" onclick="showSection('gpa', this)">GPA Calc</button>
+    </div>
+  </nav>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="label">Collaborative</div>
-    <h1>Group Idea <span>Board</span></h1>
-    <div class="subtitle" id="subtitle">No ideas yet — be the first!</div>
-
-    <div class="members-row" id="members-row" style="display:none"></div>
-  </div>
-
-  <!-- Input card -->
-  <div class="input-card">
-    <div class="input-row">
-      <div class="name-input-wrap">
-        <input type="text" id="member-name-input" placeholder="Your name..." maxlength="30" autocomplete="off"/>
-        <button class="name-clear" id="name-clear" onclick="clearName()">✕</button>
-        <div class="suggestions" id="suggestions"></div>
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>Upcoming Events</h3>
+      <div class="event-item">
+        <div class="event-date">MAR 15</div>
+        <div class="event-title">Project Proposal Due</div>
       </div>
-      <input type="text" id="idea-input" placeholder="Share your idea with the group..." maxlength="200"/>
-      <button class="add-btn" id="add-btn" onclick="addIdea()">+ Post Idea</button>
+      <div class="event-item">
+        <div class="event-date">MAR 22</div>
+        <div class="event-title">Midterm Hackathon</div>
+      </div>
+      <div class="event-item">
+        <div class="event-date">APR 05</div>
+        <div class="event-title">Group Presentation</div>
+      </div>
     </div>
-    <div class="posting-as" id="posting-as">
-      <span>Posting as <strong id="posting-name"></strong></span>
-    </div>
-  </div>
+  </aside>
 
-  <!-- Ideas -->
-  <div id="ideas-list">
-    <div class="empty-state">
-      <div class="icon">💡</div>
-      <div>The board is empty. Drop the first idea!</div>
-    </div>
-  </div>
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Section: Group Ideas -->
+      <section id="section-ideas" class="app-section active">
+        <div class="header">
+          <div class="label">Collaborative</div>
+          <h1>Idea <span>Board</span></h1>
+          <div class="subtitle" id="subtitle">No ideas yet — be the first!</div>
+        </div>
 
-  <!-- Stats -->
-  <div id="stats-row"></div>
+        <div class="input-card">
+          <div class="input-row">
+            <input type="text" id="member-name-input" placeholder="Your name..." style="flex: 0 0 150px;">
+            <input type="text" id="idea-input" placeholder="Share your idea..." style="flex: 1;">
+            <button class="btn-primary" onclick="addIdea()">+ Post Idea</button>
+          </div>
+        </div>
+
+        <div id="ideas-list"></div>
+      </section>
+
+      <!-- Section: GPA Calculator -->
+      <section id="section-gpa" class="app-section">
+        <div class="header">
+          <div class="label">Academic Tools</div>
+          <h1>GPA <span>Calculator</span></h1>
+          <div class="subtitle">Track your performance and stay on target</div>
+        </div>
+
+        <div class="input-card">
+          <table class="gpa-table">
+            <thead>
+              <tr>
+                <th style="width: 50%;">Course Name</th>
+                <th style="width: 25%;">Credits</th>
+                <th style="width: 25%;">Grade</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="gpa-rows">
+              <tr class="gpa-row">
+                <td><input type="text" placeholder="e.g. Computer Science" style="width: 100%;"></td>
+                <td><input type="number" class="course-credits" placeholder="3" min="1" style="width: 100%;"></td>
+                <td>
+                  <select class="course-grade" style="width: 100%;">
+                    <option value="4.0">A (4.0)</option>
+                    <option value="3.7">A- (3.7)</option>
+                    <option value="3.3">B+ (3.3)</option>
+                    <option value="3.0">B (3.0)</option>
+                    <option value="2.7">B- (2.7)</option>
+                    <option value="2.3">C+ (2.3)</option>
+                    <option value="2.0">C (2.0)</option>
+                    <option value="1.7">C- (1.7)</option>
+                    <option value="1.0">D (1.0)</option>
+                    <option value="0.0">F (0.0)</option>
+                  </select>
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div style="display: flex; gap: 12px;">
+            <button class="btn-primary" style="background: rgba(255,255,255,0.1);" onclick="addGpaRow()">+ Add Course</button>
+            <button class="btn-primary" onclick="calculateGPA()">Calculate GPA</button>
+          </div>
+        </div>
+
+        <div id="gpa-result-container" style="display: none;">
+            <div class="gpa-result-card">
+                <div class="gpa-label">Your Cumulative GPA</div>
+                <div class="gpa-value" id="gpa-display">0.00</div>
+                <div class="subtitle" id="gpa-feedback">Excellent work! Keep it up.</div>
+            </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
 </div>
 
-<!-- Toast -->
 <div id="toast"></div>
 
 <script>
-  const PRESET_COLORS = ["#FF6B6B","#FF9F43","#FECA57","#48DBFB","#1DD1A1","#54A0FF","#A29BFE","#FF9FF3","#00D2D3","#C8D6E5"];
+  // Navigation
+  function showSection(section, btn) {
+    document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    
+    document.getElementById('section-' + section).classList.add('active');
+    btn.classList.add('active');
+  }
 
-  // Color assigned per unique name
-  let nameRegistry = JSON.parse(localStorage.getItem("name-registry") || "{}");
+  // GPA Calculator Logic
+  function addGpaRow() {
+    const tbody = document.getElementById('gpa-rows');
+    const row = document.createElement('tr');
+    row.className = 'gpa-row';
+    row.innerHTML = `
+      <td><input type="text" placeholder="Course Name" style="width: 100%;"></td>
+      <td><input type="number" class="course-credits" placeholder="3" min="1" style="width: 100%;"></td>
+      <td>
+        <select class="course-grade" style="width: 100%;">
+          <option value="4.0">A (4.0)</option>
+          <option value="3.7">A- (3.7)</option>
+          <option value="3.3">B+ (3.3)</option>
+          <option value="3.0">B (3.0)</option>
+          <option value="2.7">B- (2.7)</option>
+          <option value="2.3">C+ (2.3)</option>
+          <option value="2.0">C (2.0)</option>
+          <option value="1.7">C- (1.7)</option>
+          <option value="1.0">D (1.0)</option>
+          <option value="0.0">F (0.0)</option>
+        </select>
+      </td>
+      <td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  function calculateGPA() {
+    const creditsInputs = document.querySelectorAll('.course-credits');
+    const gradeSelects = document.querySelectorAll('.course-grade');
+    
+    let totalPoints = 0;
+    let totalCredits = 0;
+    let hasError = false;
+
+    creditsInputs.forEach((input, index) => {
+      const credits = parseFloat(input.value);
+      const grade = parseFloat(gradeSelects[index].value);
+      
+      if (!isNaN(credits) && credits > 0) {
+        totalPoints += (grade * credits);
+        totalCredits += credits;
+      } else if (input.value !== "") {
+          hasError = true;
+      }
+    });
+
+    if (totalCredits === 0) {
+      showToast("Please enter valid credits for at least one course.");
+      return;
+    }
+
+    const gpa = totalPoints / totalCredits;
+    const gpaDisplay = document.getElementById('gpa-display');
+    gpaDisplay.textContent = gpa.toFixed(2);
+    
+    const feedback = document.getElementById('gpa-feedback');
+    if (gpa >= 3.5) feedback.textContent = "Outstanding! You're on the Dean's List track.";
+    else if (gpa >= 3.0) feedback.textContent = "Great job! Solid academic performance.";
+    else if (gpa >= 2.0) feedback.textContent = "Good progress. Keep pushing for higher grades!";
+    else feedback.textContent = "Focus on your studies. You can improve this!";
+
+    document.getElementById('gpa-result-container').style.display = 'block';
+    showToast("GPA Calculated!");
+  }
+
+  // Idea Board Logic (Restored and simplified for integration)
+  const PRESET_COLORS = ["#FF6B6B","#FF9F43","#FECA57","#48DBFB","#1DD1A1","#54A0FF","#A29BFE","#FF9FF3"];
   let ideas = JSON.parse(localStorage.getItem("group-ideas") || "[]");
-  let selectedName = "";
+  let nameRegistry = JSON.parse(localStorage.getItem("name-registry") || "{}");
 
   function getProfile(name) {
     if (!nameRegistry[name]) {
@@ -434,124 +426,23 @@
     return nameRegistry[name];
   }
 
-  function getInitials(name) {
-    return name.trim().split(/\s+/).map(w => w[0].toUpperCase()).slice(0,2).join("");
-  }
-
-  // Name input logic
-  const nameInput = document.getElementById("member-name-input");
-  const suggestionsEl = document.getElementById("suggestions");
-  const clearBtn = document.getElementById("name-clear");
-
-  nameInput.addEventListener("input", () => {
-    const val = nameInput.value.trim();
-    clearBtn.style.display = val ? "block" : "none";
-    if (val) {
-      applyName(val);
-      showSuggestions(val);
-    } else {
-      selectedName = "";
-      resetInputStyle();
-      closeSuggestions();
-      document.getElementById("posting-as").style.display = "none";
-    }
-  });
-
-  nameInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") { closeSuggestions(); document.getElementById("idea-input").focus(); }
-    if (e.key === "Escape") closeSuggestions();
-  });
-
-  nameInput.addEventListener("focus", () => {
-    if (nameInput.value.trim()) showSuggestions(nameInput.value.trim());
-  });
-
-  document.addEventListener("click", e => {
-    if (!e.target.closest(".name-input-wrap")) closeSuggestions();
-  });
-
-  function showSuggestions(val) {
-    const lower = val.toLowerCase();
-    const pastNames = [...new Set(ideas.map(i => i.member))];
-    const matches = pastNames.filter(n => n.toLowerCase().includes(lower) && n !== val);
-    if (matches.length === 0) { closeSuggestions(); return; }
-
-    suggestionsEl.innerHTML = matches.slice(0, 6).map(n => {
-      const p = getProfile(n);
-      return `<div class="suggestion-item" onclick="pickSuggestion('${escapeHtml(n)}')">
-        <div class="suggestion-dot" style="background:${p.color}"></div>
-        <span>${escapeHtml(n)}</span>
-      </div>`;
-    }).join("");
-    suggestionsEl.classList.add("open");
-  }
-
-  function closeSuggestions() { suggestionsEl.classList.remove("open"); }
-
-  function pickSuggestion(name) {
-    nameInput.value = name;
-    applyName(name);
-    closeSuggestions();
-    clearBtn.style.display = "block";
-    document.getElementById("idea-input").focus();
-  }
-
-  function clearName() {
-    nameInput.value = "";
-    selectedName = "";
-    clearBtn.style.display = "none";
-    resetInputStyle();
-    document.getElementById("posting-as").style.display = "none";
-    closeSuggestions();
-    nameInput.focus();
-  }
-
-  function applyName(name) {
-    selectedName = name;
-    const profile = getProfile(name);
-    nameInput.style.borderColor = profile.color;
-    nameInput.style.color = profile.color;
-    document.getElementById("add-btn").style.background =
-      "linear-gradient(135deg," + profile.color + "," + profile.color + "88)";
-
-    const pa = document.getElementById("posting-as");
-    pa.style.display = "flex";
-    pa.style.color = profile.color + "cc";
-    document.getElementById("posting-name").textContent = name;
-    document.getElementById("posting-name").style.color = profile.color;
-  }
-
-  function resetInputStyle() {
-    nameInput.style.borderColor = "rgba(255,255,255,0.15)";
-    nameInput.style.color = "white";
-    document.getElementById("add-btn").style.background = "linear-gradient(135deg,#48DBFB,#5F27CD)";
-  }
-
-  function formatDateTime(ts) {
-    const d = new Date(ts);
-    const date = d.toLocaleDateString([], { month:"short", day:"numeric", year:"numeric" });
-    const time = d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
-    return date + " • " + time;
-  }
-
   function addIdea() {
-    const input = document.getElementById("idea-input");
-    const text = input.value.trim();
+    const nameInput = document.getElementById("member-name-input");
+    const ideaInput = document.getElementById("idea-input");
     const name = nameInput.value.trim();
-    if (!name) { showToast("Enter your name first!"); nameInput.focus(); return; }
-    if (!text) { showToast("Write an idea first!"); return; }
+    const text = ideaInput.value.trim();
 
-    selectedName = name;
+    if (!name || !text) {
+      showToast("Please enter both name and idea!");
+      return;
+    }
+
     ideas.unshift({ id: Date.now(), member: name, text });
     localStorage.setItem("group-ideas", JSON.stringify(ideas));
-    input.value = "";
+    ideaInput.value = "";
     renderIdeas();
     showToast("Idea posted!");
   }
-
-  document.getElementById("idea-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") addIdea();
-  });
 
   function deleteIdea(id) {
     ideas = ideas.filter(i => i.id !== id);
@@ -562,58 +453,39 @@
   function renderIdeas() {
     const list = document.getElementById("ideas-list");
     const subtitle = document.getElementById("subtitle");
-    const statsRow = document.getElementById("stats-row");
-
-    subtitle.textContent = ideas.length === 0
-      ? "No ideas yet — be the first!"
-      : ideas.length + " idea" + (ideas.length !== 1 ? "s" : "") + " from the group";
 
     if (ideas.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="icon">💡</div><div>The board is empty. Drop the first idea!</div></div>`;
-      statsRow.innerHTML = "";
+      list.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--muted);">Board is empty.</div>`;
+      subtitle.textContent = "No ideas yet — be the first!";
       return;
     }
 
-    list.innerHTML = ideas.map((item, idx) => {
+    subtitle.textContent = `${ideas.length} idea${ideas.length !== 1 ? 's' : ''} shared`;
+    list.innerHTML = ideas.map(item => {
       const p = getProfile(item.member);
-      const initials = getInitials(item.member);
+      const initials = item.member.substring(0,2).toUpperCase();
       return `
-      <div class="idea-card" style="border-left:4px solid ${p.color};animation-delay:${idx*0.05}s">
-        <div class="avatar" style="background:${p.color}22;border-color:${p.color};color:${p.color};font-size:14px;font-weight:700;letter-spacing:0.5px">${initials}</div>
-        <div class="idea-body">
-          <div class="idea-text">${escapeHtml(item.text)}</div>
-          <div class="idea-meta">
-            <span class="member-name" style="color:${p.color}">${escapeHtml(item.member)}</span>
-            <span>·</span>
-            <span>${formatDateTime(item.id)}</span>
+        <div class="idea-card" style="border-left: 4px solid ${p.color}">
+          <div class="avatar" style="background:${p.color}22; border:1px solid ${p.color}; color:${p.color}">${initials}</div>
+          <div style="flex:1">
+            <div class="idea-text">${escapeHtml(item.text)}</div>
+            <div class="idea-meta">By ${escapeHtml(item.member)}</div>
           </div>
+          <button class="del-btn" onclick="deleteIdea(${item.id})">✕</button>
         </div>
-        <button class="del-btn" onclick="deleteIdea(${item.id})" title="Remove">✕</button>
-      </div>`;
-    }).join("");
-
-    // Stats
-    const memberCounts = {};
-    ideas.forEach(i => memberCounts[i.member] = (memberCounts[i.member] || 0) + 1);
-    statsRow.innerHTML = Object.entries(memberCounts).map(([m, count]) => {
-      const p = getProfile(m);
-      return `<div class="stat-chip" style="background:${p.color}22;border-color:${p.color}44;color:${p.color}">
-        <span>${escapeHtml(m)}: ${count}</span>
-      </div>`;
+      `;
     }).join("");
   }
 
   function escapeHtml(str) {
-    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
-  let toastTimer;
   function showToast(msg) {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
+    setTimeout(() => t.classList.remove("show"), 2500);
   }
 
   renderIdeas();
