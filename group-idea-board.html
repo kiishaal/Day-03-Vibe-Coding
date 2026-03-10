@@ -10,7 +10,12 @@
 
     :root {
       --bg: #f0f4f8;
+      --bg-gradient: linear-gradient(135deg, #f0f4f8, #e2e8f0, #edf2f7);
       --card: rgba(255, 255, 255, 0.9);
+      --navbar-bg: rgba(255, 255, 255, 0.8);
+      --sidebar-bg: rgba(255, 255, 255, 0.3);
+      --item-bg: #ffffff;
+      --input-bg: #ffffff;
       --border: rgba(0, 0, 0, 0.08);
       --text: #1a202c;
       --muted: #718096;
@@ -19,12 +24,27 @@
       --navbar-height: 70px;
     }
 
+    body.dark-theme {
+      --bg: #1a202c;
+      --bg-gradient: linear-gradient(135deg, #1a202c, #2d3748, #1a202c);
+      --card: rgba(45, 55, 72, 0.9);
+      --navbar-bg: rgba(26, 32, 44, 0.8);
+      --sidebar-bg: rgba(26, 32, 44, 0.3);
+      --item-bg: #2d3748;
+      --input-bg: #2d3748;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f7fafc;
+      --muted: #a0aec0;
+      --accent: #63b3ed;
+    }
+
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #edf2f7);
+      background: var(--bg-gradient);
       font-family: 'DM Sans', sans-serif;
       color: var(--text);
       overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* Orbs */
@@ -49,7 +69,7 @@
     /* Navbar */
     .navbar {
       grid-column: 1 / -1;
-      background: rgba(255, 255, 255, 0.8);
+      background: var(--navbar-bg);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -66,9 +86,15 @@
       letter-spacing: 2px;
     }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 10px;
     }
 
     .nav-btn {
@@ -89,14 +115,73 @@
       background: rgba(0,0,0,0.05);
     }
 
+    body.dark-theme .nav-btn:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
     .nav-btn.active {
       color: white;
       background: var(--accent);
     }
 
+    /* Theme Toggle */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e0;
+      transition: .4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
     /* Sidebar */
     .sidebar {
-      background: rgba(255,255,255,0.3);
+      background: var(--sidebar-bg);
       border-right: 1px solid var(--border);
       padding: 30px 20px;
       overflow-y: auto;
@@ -112,7 +197,7 @@
     }
 
     .event-item {
-      background: white;
+      background: var(--item-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px;
@@ -174,7 +259,7 @@
 
     .input-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
     .input-row { display: flex; gap: 12px; flex-wrap: wrap; }
-    input[type="text"], input[type="number"], select { background: white; border: 1px solid var(--border); border-radius: 12px; color: var(--text); padding: 12px 16px; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    input[type="text"], input[type="number"], select { background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; color: var(--text); padding: 12px 16px; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.3s; }
     input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1); }
 
     .btn-primary { background: var(--accent); border: none; border-radius: 12px; color: white; padding: 12px 24px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
@@ -183,13 +268,13 @@
     /* GPA Calc Specific */
     .gpa-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-bottom: 20px; }
     .gpa-table th { text-align: left; padding: 0 16px 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-    .gpa-row { background: white; border-radius: 12px; }
+    .gpa-row { background: var(--item-bg); border-radius: 12px; }
     .gpa-row td { padding: 12px 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .gpa-row td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
     .gpa-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
     
     .gpa-result-card {
-        background: white;
+        background: var(--item-bg);
         border: 2px solid var(--accent);
         border-radius: 20px;
         padding: 30px;
@@ -202,15 +287,17 @@
 
     /* Ideas list */
     #ideas-list { display: flex; flex-direction: column; gap: 12px; }
-    .idea-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .idea-card { background: var(--item-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
     .idea-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; color: var(--text); }
     .idea-meta { font-size: 12px; color: var(--muted); }
     .del-btn { background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px; color: #e53e3e; width: 32px; height: 32px; cursor: pointer; transition: all 0.2s; }
     .del-btn:hover { background: #feb2b2; color: #c53030; }
+    body.dark-theme .del-btn { background: #442727; border-color: #822727; color: #fc8181; }
+    body.dark-theme .del-btn:hover { background: #822727; color: #fff; }
 
     /* Toast */
-    #toast { position: fixed; bottom: 30px; right: 30px; background: #2d3748; border-radius: 12px; padding: 14px 20px; color: white; z-index: 999; transform: translateX(200px); opacity: 0; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    #toast { position: fixed; bottom: 30px; right: 30px; background: var(--text); border-radius: 12px; padding: 14px 20px; color: var(--bg); z-index: 999; transform: translateX(200px); opacity: 0; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     #toast.show { transform: translateX(0); opacity: 1; }
 
     @media (max-width: 768px) {
@@ -228,10 +315,19 @@
 <div class="app-wrapper">
   <nav class="navbar">
     <div class="nav-logo">STUDENT<span>HUB</span></div>
-    <div class="nav-links">
-      <button class="nav-btn active" onclick="showSection('ideas', this)">Group Ideas</button>
-      <button class="nav-btn" onclick="showSection('gpa', this)">GPA Calc</button>
-      <button class="nav-btn" onclick="showSection('pomodoro', this)">Pomodoro</button>
+    <div class="nav-right">
+      <div class="nav-links">
+        <button class="nav-btn active" onclick="showSection('ideas', this)">Group Ideas</button>
+        <button class="nav-btn" onclick="showSection('gpa', this)">GPA Calc</button>
+        <button class="nav-btn" onclick="showSection('pomodoro', this)">Pomodoro</button>
+      </div>
+      <div class="theme-toggle">
+        <span>Dark Mode</span>
+        <label class="switch">
+          <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()">
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
   </nav>
 
@@ -355,6 +451,29 @@
 <div id="toast"></div>
 
 <script>
+  // Theme Toggle Logic
+  function toggleTheme() {
+    const isDark = document.getElementById('theme-checkbox').checked;
+    if (isDark) {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  // Load Theme
+  (function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+      // We'll set the checkbox state after DOM is fully loaded or just here if it's already there
+      window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('theme-checkbox').checked = true;
+      });
+    }
+  })();
+
   // Navigation
   function showSection(section, btn) {
     document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
