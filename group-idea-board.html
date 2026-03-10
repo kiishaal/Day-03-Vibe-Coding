@@ -231,6 +231,7 @@
     <div class="nav-links">
       <button class="nav-btn active" onclick="showSection('ideas', this)">Group Ideas</button>
       <button class="nav-btn" onclick="showSection('gpa', this)">GPA Calc</button>
+      <button class="nav-btn" onclick="showSection('pomodoro', this)">Pomodoro</button>
     </div>
   </nav>
 
@@ -330,8 +331,25 @@
         </div>
       </section>
 
-    </div>
-  </main>
+      <!-- Section: Pomodoro Timer -->
+      <section id="section-pomodoro" class="app-section">
+        <div class="header">
+          <div class="label">Productivity</div>
+          <h1>Pomodoro <span>Timer</span></h1>
+          <div class="subtitle">Stay focused with time‑boxed study sessions</div>
+        </div>
+
+        <div class="input-card" style="text-align:center; max-width:360px; margin:auto;">
+          <div style="margin-bottom:12px; display:inline-flex; align-items:center; gap:6px;">
+            <label for="duration-input" style="font-size:14px;">Minutes:</label>
+            <input type="number" id="duration-input" value="25" min="1" style="width:80px; padding:6px 8px; font-size:16px; text-align:center; border:1px solid var(--border); border-radius:8px;" />
+          </div>
+          <div id="timer-display" style="font-size:64px; font-weight:700; margin-bottom:20px;">25:00</div>
+          <button class="btn-primary" id="start-btn">Start</button>
+          <button class="btn-primary" id="reset-btn" style="background:#a0aec0; margin-left:12px;">Reset</button>
+        </div>
+      </section>
+
 </div>
 
 <div id="toast"></div>
@@ -489,6 +507,62 @@
   }
 
   renderIdeas();
+
+  // Pomodoro Timer Logic
+  let timerInterval;
+  let timeLeft = 25 * 60; // seconds
+
+  function getDurationSeconds() {
+    const minutes = parseInt(document.getElementById('duration-input').value, 10);
+    return (!isNaN(minutes) && minutes > 0) ? minutes * 60 : 25 * 60;
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer-display').textContent =
+      `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+  }
+
+  function startTimer() {
+    if (timerInterval) return; // already running
+    // if not started yet, ensure timeLeft matches duration
+    if (timeLeft === 0 || timeLeft === getDurationSeconds()) {
+      timeLeft = getDurationSeconds();
+    }
+    timerInterval = setInterval(() => {
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        const bell = document.getElementById('bell-sound');
+        if (bell) bell.play();
+        showToast("Time's up!");
+        return;
+      }
+      timeLeft--;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timeLeft = getDurationSeconds();
+    updateTimerDisplay();
+  }
+
+  document.getElementById('start-btn').addEventListener('click', startTimer);
+  document.getElementById('reset-btn').addEventListener('click', resetTimer);
+  document.getElementById('duration-input').addEventListener('change', () => {
+    // when duration changes while timer stopped, update display
+    if (!timerInterval) {
+      timeLeft = getDurationSeconds();
+      updateTimerDisplay();
+    }
+  });
+  updateTimerDisplay();
 </script>
+
+<audio id="bell-sound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
 </body>
 </html>
